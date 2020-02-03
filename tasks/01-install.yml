@@ -1,5 +1,12 @@
 ---
 
+- name: install requirements
+  package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - unzip
+
 - name: 'downloading SenchaCmd archive'
   get_url:
     url: '{{ sencha_download_url }}'
