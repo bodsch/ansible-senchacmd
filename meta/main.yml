@@ -1,0 +1,29 @@
+
+galaxy_info:
+  author: Bodo Schulz
+  description: SenchaCmd ansible role
+  company: your company (optional)
+
+  # Some suggested licenses:
+  # - BSD (default)
+  # - MIT
+  # - GPLv2
+  # - GPLv3
+  # - Apache
+  # - CC-BY
+  license: Apache
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - trusty
+        - xenial
+    - name: GenericLinux
+      versions:
+        - all
+        - any
+    - name: Debian
+      versions:
+        - all
+
+dependencies: []
