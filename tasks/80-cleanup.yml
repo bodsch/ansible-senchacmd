@@ -1,0 +1,8 @@
+---
+- name: 'cleaning up'
+  shell: |
+    cd /tmp
+    rm -rf SenchaCmd*
+  when: (
+    (sencha_cmd_installed is not defined or sencha_cmd_installed == false) and
+    (sencha_cmd_downloaded is defined and sencha_cmd_downloaded == true))

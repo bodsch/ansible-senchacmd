@@ -1,0 +1,38 @@
+---
+
+- name: 'downloading SenchaCmd archive'
+  get_url:
+    url: '{{ sencha_download_url }}'
+    dest: '/tmp/{{sencha_file_name}}'
+  when:
+    sencha_cmd_installed is not defined or sencha_cmd_installed == false
+
+- name: '[fact] set SenchaCmd archive present'
+  set_fact:
+    sencha_cmd_downloaded: true
+
+- name: 'copy zip archive'
+  shell: |
+    cd /tmp
+    cp SenchaCmd-*.zip SenchaCmd.zip
+  when: (
+    (sencha_cmd_installed is not defined or sencha_cmd_installed == false) and
+    (sencha_cmd_downloaded is defined and sencha_cmd_downloaded == true))
+
+- name: 'unarchive SenchaCmd archive'
+  unarchive:
+    src: '/tmp/SenchaCmd.zip'
+    dest: '/tmp'
+    copy: no
+  when: (
+    (sencha_cmd_installed is not defined or sencha_cmd_installed == false) and
+    (sencha_cmd_downloaded is defined and sencha_cmd_downloaded == true))
+
+- name: 'install SenchaCmd'
+  shell: |
+    cd /tmp
+    mv SenchaCmd-*.sh SenchaCmd.sh
+    /tmp/SenchaCmd.sh -q -dir {{sencha_home_directory}}/{{ sencha_version }}
+  when: (
+    (sencha_cmd_installed is not defined or sencha_cmd_installed == false) and
+    (sencha_cmd_downloaded is defined and sencha_cmd_downloaded == true))

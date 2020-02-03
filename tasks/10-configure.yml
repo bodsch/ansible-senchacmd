@@ -1,0 +1,26 @@
+---
+- name: 'insert custom profile script to define PATH variables'
+  template:
+    src: profile.d/sencha.sh.j2
+    dest: /etc/profile.d/sencha.sh
+    owner: 'root'
+    group: 'root'
+    mode: '0755'
+
+- name: 'set initial heap size'
+  lineinfile:
+    path: "{{sencha_home_directory}}/{{ sencha_version }}/sencha.vmoptions"
+    regexp: '^\-Xms(.*)'
+    line: '-Xms{{ sencha_memory_inital_heap }}'
+    state: present
+    backup: yes
+    backrefs: yes
+
+- name: 'set max heap size'
+  lineinfile:
+    path: "{{sencha_home_directory}}/{{ sencha_version }}/sencha.vmoptions"
+    regexp: '^\-Xmx(.*)'
+    line: '-Xmx{{ sencha_memory_max_heap }}'
+    state: present
+    backup: yes
+    backrefs: yes

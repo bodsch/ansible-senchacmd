@@ -1,0 +1,19 @@
+---
+# defaults file for SenchaCmd
+sencha_cmd_installed: false
+
+os_architecture: 'amd64'
+
+# http://cdn.sencha.com/cmd/6.7.0.63/no-jre/SenchaCmd-6.7.0.63-linux-amd64.sh.zip
+
+sencha_major: '6'
+sencha_version: '6.5.3.6'
+sencha_file_name: 'SenchaCmd-{{ sencha_version }}-linux-{{ os_architecture }}.sh.zip'
+sencha_download_url: 'http://cdn.sencha.com/cmd/{{ sencha_version }}/no-jre/{{ sencha_file_name }}'
+sencha_home_directory: '/opt/Sencha/Cmd'
+
+# Use -Xmx to specify the maximum heap size
+# Use -Xms to specify the initial Java heap size
+# Use -Xss to set the Java thread stack size
+sencha_memory_max_heap: '4G'
+sencha_memory_inital_heap: '512m'

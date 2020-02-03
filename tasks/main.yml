@@ -1,0 +1,14 @@
+---
+# setting facts so that they will be persisted in the fact cache
+- name: '[fact] set SenchaCmd installed'
+  set_fact:
+    sencha_cmd_installed: true
+  when:
+    ansible_local.sencha_cmd is defined and ansible_local.sencha_cmd.version is defined
+
+- include_tasks: 01-install.yml
+  when: (
+    sencha_cmd_installed is defined and sencha_cmd_installed != true)
+- include_tasks: 10-configure.yml
+- include_tasks: 80-cleanup.yml
+- include_tasks: 85-facts.yml
