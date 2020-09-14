@@ -1,29 +1,24 @@
+---
 
 galaxy_info:
   author: Bodo Schulz
   description: SenchaCmd ansible role
-  company: your company (optional)
-
-  # Some suggested licenses:
-  # - BSD (default)
-  # - MIT
-  # - GPLv2
-  # - GPLv3
-  # - Apache
-  # - CC-BY
   license: Apache
-
+  min_ansible_version: 2.8
   platforms:
-    - name: Ubuntu
-      versions:
-        - trusty
-        - xenial
     - name: GenericLinux
       versions:
         - all
         - any
+    - name: Ubuntu
+      versions:
+        - all
     - name: Debian
       versions:
         - all
+    - name: EL
+      versions:
+        - 7
+        - 8
 
 dependencies: []

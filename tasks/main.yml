@@ -1,14 +1,103 @@
 ---
-# setting facts so that they will be persisted in the fact cache
-- name: '[fact] set SenchaCmd installed'
-  set_fact:
-    sencha_cmd_installed: true
-  when:
-    ansible_local.sencha_cmd is defined and ansible_local.sencha_cmd.version is defined
 
-- include_tasks: 01-install.yml
-  when: (
-    sencha_cmd_installed is defined and sencha_cmd_installed != true)
-- include_tasks: 10-configure.yml
-- include_tasks: 80-cleanup.yml
-- include_tasks: 85-facts.yml
+- name: install dependencies
+  package:
+    name: unzip
+    state: present
+
+- name: check for installed sencha
+  become: false
+  stat:
+    path: "{{ sencha_home_directory }}/{{ sencha_version }}/sencha.vmoptions"
+  register: _installed_sencha
+
+- block:
+    - name: create deployment temporary directory
+      file:
+        path: "{{ sencha_deployment_tmp_directory }}"
+        state: directory
+        mode: 0750
+
+    - name: create local temporary directory
+      become: false
+      file:
+        path: "{{ sencha_local_tmp_directory }}"
+        state: directory
+        mode: 0750
+      delegate_to: localhost
+
+    - name: download sencha archive to local folder
+      become: false
+      get_url:
+        url: "{{ sencha_download_url }}"
+        dest: "{{ sencha_local_tmp_directory }}/{{ sencha_file_name }}"
+      register: _download_artefact
+      until: _download_artefact is succeeded
+      retries: 5
+      delay: 0
+      delegate_to: localhost
+      check_mode: false
+
+    - name: deploy {{ sencha_file_name }} to destination system
+      copy:
+        src: "{{ sencha_local_tmp_directory }}/{{ sencha_file_name }}"
+        dest: "{{ sencha_deployment_tmp_directory }}"
+        mode: 0640
+
+    - name: unarchive {{ sencha_file_name }}
+      unarchive:
+        src: '{{ sencha_deployment_tmp_directory }}/{{ sencha_file_name }}'
+        dest: /tmp
+        copy: false
+        mode: 0740
+
+    - name: install SenchaCmd into {{ sencha_home_directory }}/{{ sencha_version }}
+      shell: |
+        cd /tmp
+        mv SenchaCmd-*.sh SenchaCmd.sh
+        sed -i 's|which |command -v |g' SenchaCmd.sh
+        bash -x ./SenchaCmd.sh -q -dir {{ sencha_home_directory }}/{{ sencha_version }}
+        rm -f SenchaCmd*
+      register: _install_result
+
+    - name: 'show install failure information'
+      debug:
+        msg: "{{ _install_result.stdout_lines }}"
+      when: _install_result
+
+    - name: 'set install state | true'
+      set_fact:
+        coremedia_build_state: true
+      when: _install_result is succeeded
+
+    - name: 'set install state | false'
+      set_fact:
+        coremedia_build_state: false
+      when: _install_result is failed
+
+    - name: 'show install failure information'
+      debug:
+        msg: "{{ _install_result.stdout_lines }}"
+      when: _install_result is failed
+
+  when: not _installed_sencha.stat.exists
+
+- name: insert custom profile script to define PATH variables
+  template:
+    src: profile.d/sencha.sh.j2
+    dest: /etc/profile.d/sencha.sh
+    owner: root
+    group: root
+    mode: 0755
+
+- name: write sencha.vmoptions
+  template:
+    src: sencha.vmoptions.j2
+    dest: "{{ sencha_home_directory }}/{{ sencha_version }}/sencha.vmoptions"
+    mode: 0644
+
+- name: cleaning up
+  file:
+    state: absent
+    path: '{{ sencha_deployment_tmp_directory }}'
+  when: sencha_cleanup

@@ -1,0 +1,7 @@
+---
+
+warn_list:  # or 'skip_list' to silence them completely                                                                                                                                                                                                                                                      │
+  - '106'  # Role name {} does not match ``^[a-z][a-z0-9_]+$`` pattern'                                                                                                                                                                                                                                      │
+#   - '202'  # Octal file permissions must contain leading zero or be a string'                                                                                                                                                                                                                                │
+#   - '208'  # File permissions not mentioned'                                                                                                                                                                                                                                                                 │
+#   - '503'  # Tasks that run when changed should likely be handlers'
