@@ -6,7 +6,6 @@
     state: present
 
 - name: check for installed sencha
-  become: false
   stat:
     path: "{{ sencha_home_directory }}/{{ sencha_version }}/sencha.vmoptions"
   register: _installed_sencha
