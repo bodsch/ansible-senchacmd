@@ -57,6 +57,7 @@
         sed -i 's|which |command -v |g' SenchaCmd.sh
         bash -x ./SenchaCmd.sh -q -dir {{ sencha_home_directory }}/{{ sencha_version }}
         rm -f SenchaCmd*
+        chmod -R 0755 {{ sencha_home_directory }}
       register: _install_result
 
     - name: 'show install failure information'
