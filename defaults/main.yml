@@ -3,10 +3,6 @@
 # remove downloaded files
 sencha_cleanup: true
 
-os_architecture: 'amd64'
-
-# http://cdn.sencha.com/cmd/6.7.0.63/no-jre/SenchaCmd-6.7.0.63-linux-amd64.sh.zip
-
 sencha_version: '6.5.3.6'
 
 sencha_home_directory: '/opt/Sencha/Cmd'
@@ -14,10 +10,11 @@ sencha_home_directory: '/opt/Sencha/Cmd'
 # Use -Xmx to specify the maximum heap size
 # Use -Xms to specify the initial Java heap size
 # Use -Xss to set the Java thread stack size
-sencha_memory_max_heap: '4G'
-sencha_memory_inital_heap: '512m'
+sencha_memory:
+  max_heap: '4G'
+  inital_heap: '512m'
 
 sencha_vmoptions:
-  - -Xms{{ sencha_memory_inital_heap }}
-  - -Xmx{{ sencha_memory_max_heap }}
+  - -Xms{{ sencha_memory.inital_heap }}
+  - -Xmx{{ sencha_memory.max_heap }}
   - -Dapple.awt.UIElement=true
