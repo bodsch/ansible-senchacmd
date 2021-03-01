@@ -1,9 +1,10 @@
 ---
-- hosts: all
+- name: converge
+  hosts: all
   any_errors_fatal: false
+
   environment:
     NETRC: ''
 
   roles:
-    - role: java
-    - role: ansible-sencha_cmd
+    - role: ansible-senchacmd
