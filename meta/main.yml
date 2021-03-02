@@ -3,7 +3,7 @@
 galaxy_info:
   role_name: senchacmd
   author: Bodo Schulz
-  description: SenchaCmd ansible role
+  description: Sencha Cmd, the cornerstone for building your Ext applications
   license: Apache
   min_ansible_version: 2.8
   platforms:
