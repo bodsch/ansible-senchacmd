@@ -1,6 +1,7 @@
 ---
 
 galaxy_info:
+  role_name: senchacmd
   author: Bodo Schulz
   description: SenchaCmd ansible role
   license: Apache
@@ -20,5 +21,9 @@ galaxy_info:
       versions:
         - 7
         - 8
+  galaxy_tags:
+    - development
+    - sencha
+    - senchacmd
 
 dependencies: []
