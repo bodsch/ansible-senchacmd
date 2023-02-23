@@ -1,44 +1,55 @@
 ---
+- name: information
+  hosts: all
+  gather_facts: true
+
+  pre_tasks:
+    - debug:
+        msg:
+          - "os family            : {{ ansible_distribution }} ({{ ansible_os_family }})"
+          - "distribution version : {{ ansible_distribution_major_version }}"
+          - "ansible version      : {{ ansible_version.full }}"
+          - "python version       : {{ ansible_python.version.major }}.{{ ansible_python.version.minor }}"
+
 - name: prepare container
   hosts: all
   gather_facts: true
 
   pre_tasks:
+    - name: arch- / artixlinux
+      when:
+        - ansible_distribution | lower == 'archlinux' or
+          ansible_os_family | lower == 'artix linux'
+      block:
+        - name: update pacman system
+          command: |
+            pacman --refresh --sync --sysupgrade --noconfirm
 
-    - debug:
-        msg:
-          - "os family            : {{ ansible_os_family }}"
-          - "distribution         : {{ ansible_distribution }}"
-          - "distribution version : {{ ansible_distribution_major_version }}"
-          - "ansible version      : {{ ansible_version.full }}"
-          - "python version       : {{ ansible_python.version.major }}"
+        - name: define java_packages
+          set_fact:
+            java_packages:
+              - jdk11-openjdk
 
-    - block:
-        - name: Install required packages on Debian
-          apt:
-            # name:
-            #   # required to add key to apt keyring
-            #   - gnupg
-            #   # required to verify icinga2 is running
-            #   - procps
-            update_cache: true
-
-        - name: Install Backports repository on Debian Stretch
-          apt_repository:
-            repo: deb http://deb.debian.org/debian {{ ansible_distribution_release }}-backports main
+        - name: Ensure Java is installed.
+          package:
+            name: "{{ java_packages + ['freetype2', 'fontconfig', 'ttf-terminus-nerd'] }}"
             state: present
-            update_cache: true
-          when:
-            - ansible_distribution_release == 'stretch'
 
-        - name: Install apt-transport-https on older Debian/Ubuntu versions
-          apt:
-            name:
-              - apt-transport-https
-          when:
-            - ansible_distribution_release in ['jessie', 'stretch', 'xenial']
+    - name: debian / ubuntu
+      when:
+        - ansible_os_family == 'Debian'
+      block:
+        - name: define java_packages
+          set_fact:
+            java_packages:
+              - openjdk-11-jdk
 
-      when: ansible_os_family | lower == 'debian'
+    - name: update package cache
+      become: true
+      ansible.builtin.package:
+        update_cache: true
 
   roles:
     - role: java
+      when:
+        - not ansible_distribution | lower == 'archlinux'
