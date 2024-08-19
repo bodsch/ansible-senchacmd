@@ -34,12 +34,12 @@ jobs:
 
     steps:
       - name: check out the codebase.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'ansible-senchacmd'
 
       - name: 🐍 set up python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
@@ -74,12 +74,12 @@ jobs:
 
     steps:
       - name: check out the codebase.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: 'ansible-senchacmd'
 
       - name: 🐍 set up python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
