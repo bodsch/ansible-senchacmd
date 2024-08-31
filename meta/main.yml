@@ -2,6 +2,7 @@
 
 galaxy_info:
   role_name: senchacmd
+  namespace: bodsch
 
   author: Bodo Schulz
   description: Sencha Cmd, the cornerstone for building your Ext applications
