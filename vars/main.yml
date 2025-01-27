@@ -1,9 +1,13 @@
 ---
 
 sencha_deployment_tmp_directory: /tmp/ansible/sencha
-sencha_local_tmp_directory: /tmp/ansible/sencha/{{ sencha_version }}
+# sencha_local_tmp_directory: /tmp/ansible/sencha/{{ sencha_version }}
 
 sencha_major: "{{ sencha_version.split('.')[0] }}"
 
 sencha_file_name: 'SenchaCmd-{{ sencha_version }}-linux-amd64.sh.zip'
 sencha_download_url: 'http://cdn.sencha.com/cmd/{{ sencha_version }}/no-jre/{{ sencha_file_name }}'
+
+sencha_local_tmp_directory: "{{
+  lookup('env', 'CUSTOM_LOCAL_TMP_DIRECTORY') |
+  default(lookup('env', 'HOME') ~ '/.cache/ansible/sencha', true) }}/{{ sencha_version }}"
